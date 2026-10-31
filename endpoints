@@ -1,0 +1,13 @@
+https://prod.api.market/api/v1/api-provider/cricbuzz-cricket
+/mcenter/v1/{matchId}
+/matches/v1/live
+/mcenter/v1/{matchId}/comm
+/mcenter/v1/{matchId}/overs
+/mcenter/v1/{matchId}/scard
+/teams/v1/{teamId}/players
+/stats/v1/player/{playerId}/batting
+/stats/v1/player/{playerId}/bowling
+/stats/v1/player/{playerId}
+/matches/v1/upcoming
+/matches/v1/recent
+/stats/v1/series/{seriesId}/points-table

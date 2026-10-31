@@ -4,7 +4,6 @@
   "private": true,
   "description": "HTML/JavaScript cricket broadcast overlay with Vercel serverless CricketData API proxy",
   "scripts": {
-    "dev": "vercel dev",
     "check": "node --check api/matches.js && node --check public/admin.js && node --check public/overlay-api.js"
   },
   "engines": {

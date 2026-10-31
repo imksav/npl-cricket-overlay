@@ -1,11 +1,158 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NPL Overlay Control Centre</title><script src="https://cdn.tailwindcss.com"></script><link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style>body{font-family:Inter,sans-serif;background:#080f1e;color:#e5e7eb}.sports{font-family:'Chakra Petch',sans-serif}.panel{background:#111c30;border:1px solid #26364f;border-radius:18px}.muted{color:#94a3b8}.btn{border-radius:10px;padding:10px 14px;font-weight:700;font-size:13px}.primary{background:#d99a16;color:#111827}.secondary{background:#26364f;color:#e2e8f0}input,select{background:#0b1425;border:1px solid #34445f;border-radius:9px;padding:10px;color:white;width:100%}.match{border:1px solid #2a3a53;border-radius:12px;padding:14px;background:#0c1729}.match.selected{border-color:#e5aa2e;background:#18243a}.tag{font-size:10px;font-weight:800;letter-spacing:.08em;padding:4px 7px;border-radius:6px;background:#26364f;color:#cbd5e1}</style></head>
-<body><div class="max-w-6xl mx-auto px-4 py-8">
-<header class="flex flex-wrap justify-between items-center gap-4 mb-8"><div><div class="text-amber-400 text-xs font-black tracking-[.2em] uppercase">Broadcast tools</div><h1 class="sports text-3xl md:text-4xl font-extrabold text-white mt-1">NPL LIVE OVERLAY <span class="text-amber-400">CONTROL</span></h1><p class="muted text-sm mt-2">Choose a match, preview its score feed and send the overlay to OBS.</p></div><div class="flex gap-2"><a class="btn secondary" href="/overlay.html" target="_blank">Open overlay</a><button class="btn primary" id="refreshBtn">↻ Refresh matches</button></div></header>
-<div class="grid lg:grid-cols-[1.35fr_.85fr] gap-5">
-<section class="panel p-5"><div class="flex justify-between items-center gap-3 mb-4"><div><h2 class="sports text-xl font-bold text-white">Match centre</h2><p class="muted text-xs mt-1">Live/current matches returned by CricketData.org</p></div><span class="tag" id="providerStatus">CONNECTING</span></div>
-<div class="grid sm:grid-cols-[1fr_180px] gap-3 mb-4"><input id="search" placeholder="Search NPL teams, tournament or match…"><select id="filter"><option value="all">All returned matches</option><option value="npl">Nepal Premier League</option><option value="live">Live only</option><option value="upcoming">Upcoming</option><option value="finished">Completed</option></select></div><div id="matches" class="space-y-3"><div class="muted text-sm p-4">Loading matches…</div></div><div class="muted text-xs mt-4" id="quota"></div></section>
-<aside class="space-y-5"><section class="panel p-5"><h2 class="sports text-xl font-bold text-white">Selected match</h2><div id="selectedSummary" class="muted text-sm mt-3">Select a match from the list.</div><div class="mt-5"><label class="text-xs font-bold text-slate-300">Overlay refresh interval</label><select id="interval" class="mt-2"><option value="900">15 minutes (recommended for free quota)</option><option value="600">10 minutes</option><option value="300">5 minutes</option></select><p class="muted text-xs mt-2">The free account allows 100 API hits/day. Faster refreshes can exhaust the quota.</p></div><button class="btn primary w-full mt-5" id="startBtn" disabled>Start selected overlay →</button></section>
-<section class="panel p-5"><h2 class="sports text-xl font-bold text-white">OBS Browser Source</h2><p class="muted text-xs mt-2">After selecting a match, copy this URL into OBS → Sources → + → Browser.</p><div class="mt-3"><input id="overlayUrl" readonly placeholder="Select a match first"></div><div class="flex gap-2 mt-3"><button id="copyBtn" class="btn secondary flex-1" disabled>Copy URL</button><a id="openBtn" class="btn secondary flex-1 text-center opacity-40 pointer-events-none" href="#" target="_blank">Preview</a></div><p class="text-amber-300 text-xs mt-4">Set OBS width/height to 1920 × 1080. Use the overlay URL, not this control page.</p></section>
-<section class="panel p-5"><h2 class="sports text-lg font-bold text-white">API connection</h2><p class="muted text-xs mt-2" id="connectionText">Checking server configuration…</p><a class="text-amber-300 text-xs underline inline-block mt-3" href="https://cricketdata.org/" target="_blank" rel="noreferrer">CricketData.org account & API key ↗</a></section></aside></div>
-<footer class="muted text-xs mt-8">Your original overlay design is retained. API data is shown only when supplied by the provider; missing ball-by-ball/player details are not fabricated.</footer></div><script src="/admin.js"></script></body></html>
+<html lang="en">
+
+<head>
+     <meta charset="utf-8">
+     <meta name="viewport" content="width=device-width,initial-scale=1">
+     <title>NPL Overlay Control Centre</title>
+     <script src="https://cdn.tailwindcss.com"></script>
+     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+     <style>
+          body {
+               font-family: Inter, sans-serif;
+               background: #080f1e;
+               color: #e5e7eb
+          }
+
+          .sports {
+               font-family: 'Chakra Petch', sans-serif
+          }
+
+          .panel {
+               background: #111c30;
+               border: 1px solid #26364f;
+               border-radius: 18px
+          }
+
+          .muted {
+               color: #94a3b8
+          }
+
+          .btn {
+               border-radius: 10px;
+               padding: 10px 14px;
+               font-weight: 700;
+               font-size: 13px
+          }
+
+          .primary {
+               background: #d99a16;
+               color: #111827
+          }
+
+          .secondary {
+               background: #26364f;
+               color: #e2e8f0
+          }
+
+          input,
+          select {
+               background: #0b1425;
+               border: 1px solid #34445f;
+               border-radius: 9px;
+               padding: 10px;
+               color: white;
+               width: 100%
+          }
+
+          .match {
+               border: 1px solid #2a3a53;
+               border-radius: 12px;
+               padding: 14px;
+               background: #0c1729
+          }
+
+          .match.selected {
+               border-color: #e5aa2e;
+               background: #18243a
+          }
+
+          .tag {
+               font-size: 10px;
+               font-weight: 800;
+               letter-spacing: .08em;
+               padding: 4px 7px;
+               border-radius: 6px;
+               background: #26364f;
+               color: #cbd5e1
+          }
+     </style>
+</head>
+
+<body>
+     <div class="max-w-6xl mx-auto px-4 py-8">
+          <header class="flex flex-wrap justify-between items-center gap-4 mb-8">
+               <div>
+                    <div class="text-amber-400 text-xs font-black tracking-[.2em] uppercase">Broadcast tools</div>
+                    <h1 class="sports text-3xl md:text-4xl font-extrabold text-white mt-1">NPL LIVE OVERLAY <span
+                              class="text-amber-400">CONTROL</span></h1>
+                    <p class="muted text-sm mt-2">Choose a match, preview its score feed and send the overlay to OBS.
+                    </p>
+               </div>
+               <div class="flex gap-2"><a class="btn secondary" href="/overlay.html" target="_blank">Open
+                         overlay</a><button class="btn primary" id="refreshBtn">↻ Refresh matches</button></div>
+          </header>
+          <div class="grid lg:grid-cols-[1.35fr_.85fr] gap-5">
+               <section class="panel p-5">
+                    <div class="flex justify-between items-center gap-3 mb-4">
+                         <div>
+                              <h2 class="sports text-xl font-bold text-white">Match centre</h2>
+                              <p class="muted text-xs mt-1">Live/current matches returned by Cricbuzz via API.market</p>
+                         </div><span class="tag" id="providerStatus">CONNECTING</span>
+                    </div>
+                    <div class="grid sm:grid-cols-[1fr_180px] gap-3 mb-4"><input id="search"
+                              placeholder="Search NPL teams, tournament or match…"><select id="filter">
+                              <option value="all">All returned matches</option>
+                              <option value="npl">Nepal Premier League</option>
+                              <option value="live">Live only</option>
+                              <option value="upcoming">Upcoming</option>
+                              <option value="finished">Completed</option>
+                         </select></div>
+                    <div id="matches" class="space-y-3">
+                         <div class="muted text-sm p-4">Loading matches…</div>
+                    </div>
+                    <div class="muted text-xs mt-4" id="quota"></div>
+               </section>
+               <aside class="space-y-5">
+                    <section class="panel p-5">
+                         <h2 class="sports text-xl font-bold text-white">Selected match</h2>
+                         <div id="selectedSummary" class="muted text-sm mt-3">Select a match from the list.</div>
+                         <div class="mt-5"><label class="text-xs font-bold text-slate-300">Overlay refresh
+                                   interval</label><select id="interval" class="mt-2">
+                                   <option value="900">15 minutes (recommended for free quota)</option>
+                                   <option value="600">10 minutes</option>
+                                   <option value="300">5 minutes</option>
+                              </select>
+                              <p class="muted text-xs mt-2">The free account allows 100 API hits/day. Faster refreshes
+                                   can exhaust the quota.</p>
+                         </div><button class="btn primary w-full mt-5" id="startBtn" disabled>Start selected overlay
+                              →</button>
+                    </section>
+                    <section class="panel p-5">
+                         <h2 class="sports text-xl font-bold text-white">OBS Browser Source</h2>
+                         <p class="muted text-xs mt-2">After selecting a match, copy this URL into OBS → Sources → + →
+                              Browser.</p>
+                         <div class="mt-3"><input id="overlayUrl" readonly placeholder="Select a match first"></div>
+                         <div class="flex gap-2 mt-3"><button id="copyBtn" class="btn secondary flex-1" disabled>Copy
+                                   URL</button><a id="openBtn"
+                                   class="btn secondary flex-1 text-center opacity-40 pointer-events-none" href="#"
+                                   target="_blank">Preview</a></div>
+                         <p class="text-amber-300 text-xs mt-4">Set OBS width/height to 1920 × 1080. Use the overlay
+                              URL, not this control page.</p>
+                    </section>
+                    <section class="panel p-5">
+                         <h2 class="sports text-lg font-bold text-white">API connection</h2>
+                         <p class="muted text-xs mt-2" id="connectionText">Checking server configuration…</p><a
+                              class="text-amber-300 text-xs underline inline-block mt-3" href="https://api.market/"
+                              target="_blank" rel="noreferrer">Cricbuzz via API.market account & API key ↗</a>
+                    </section>
+               </aside>
+          </div>
+          <footer class="muted text-xs mt-8">Your original overlay design is retained. API data is shown only when
+               supplied by the provider; missing ball-by-ball/player details are not fabricated.</footer>
+     </div>
+     <script src="/admin.js"></script>
+</body>
+
+</html>
