@@ -1,0 +1,16 @@
+{
+  "name": "live-cricket-broadcast-overlay",
+  "version": "1.0.0",
+  "private": true,
+  "description": "HTML/JavaScript cricket broadcast overlay with Vercel serverless CricketData API proxy",
+  "scripts": {
+    "dev": "vercel dev",
+    "check": "node --check api/matches.js && node --check public/admin.js && node --check public/overlay-api.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "vercel": "^65.4.0"
+  }
+}
